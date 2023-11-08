@@ -1,0 +1,4 @@
+- kenrel module guide 
+https://sysprog21.github.io/lkmpg/#what-modules-are-in-my-kernel
+
+

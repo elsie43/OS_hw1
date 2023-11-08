@@ -1,0 +1,101 @@
+#define _GNU_SOURCE
+#define false 0
+#define true 1
+#include <stdio.h>
+#include <stdlib.h>
+int main(int argc, char **argv)
+{
+    char input_mes;
+    int cpu_printed = false;
+    while (1)
+    {
+        printf("Which information do you want?\n");
+        printf("Version(v),CPU(c),Memory(m),Time(t),All(a),Exit(e)?\n");
+        scanf("%c", &input_mes);
+        if (input_mes == 'e')
+            break;
+
+        // for file opening
+        FILE *fp = fopen("/proc/my_info", "rb");
+        char *line = NULL;
+        size_t len = 0;
+        ssize_t read;
+        if (fp == NULL)
+            exit(EXIT_FAILURE);
+
+        while ((read = getline(&line, &len, fp)) != -1)
+        {
+            //printf("line of length : %zu\n",read);
+            if (input_mes == 'a')
+                printf("%s", line);
+            else if (input_mes == 'v')
+            {
+                if (line[0] == '=' && line[12] == 'V')
+                {
+                    read = getline(&line, &len, fp);
+                    printf("\nVersion: %s", line);
+                    break;
+                }
+            }
+            else if (input_mes == 'c')
+            {
+                if (line[0] == '=' && line[12] == 'C')
+                {
+                    //read = getline(&line, &len, fp);
+                    if(!cpu_printed)
+                    {
+                        read = getline(&line, &len, fp);
+                        printf("\nCPU information:\n%s", line);
+                        cpu_printed = true;
+                    }
+                    while ((read = getline(&line, &len, fp)) != -1 &&
+                            line[0] != '=')
+                    {
+                        //if(line[0] == '=' && )
+                        printf("%s", line);
+                    }
+                    //break;
+                }
+
+            }
+            else if (input_mes == 'm')
+            {
+                if (line[0] == '=' && line[12] == 'M')
+                {
+                    read = getline(&line, &len, fp);
+                    printf("\nMemory information:\n%s", line);
+                    while ((read = getline(&line, &len, fp)) != -1 &&
+                            line[0] != '=')
+                    {
+                        printf("%s", line);
+                    }
+                    break;
+                }
+            }
+            else if (input_mes == 't')
+            {
+                if (line[0] == '=' && line[12] == 'T')
+                {
+                    read = getline(&line, &len, fp);
+                    printf("\nTime information:\n%s", line);
+                    while ((read = getline(&line, &len, fp)) != -1 &&
+                            line[0] != '=')
+                    {
+                        printf("%s", line);
+                    }
+                    break;
+                }
+
+            } //else if
+            else
+                break;
+        }
+        if (line)
+            free(line);
+        scanf("%c", &input_mes); // eat '\n'
+        cpu_printed = false;
+        printf("\n----------------------------------------------------\n\n\n");
+    }
+    return 0;
+}
+

@@ -1,0 +1,1 @@
+cmd_/home/os2021/hw1-elsie43/module/my_info.ko := ld -r -m elf_x86_64 -z max-page-size=0x200000 -T ./scripts/module-common.lds --build-id  -o /home/os2021/hw1-elsie43/module/my_info.ko /home/os2021/hw1-elsie43/module/my_info.o /home/os2021/hw1-elsie43/module/my_info.mod.o ;  true
